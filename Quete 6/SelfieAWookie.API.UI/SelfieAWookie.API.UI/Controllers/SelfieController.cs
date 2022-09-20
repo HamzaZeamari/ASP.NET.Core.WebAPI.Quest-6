@@ -18,11 +18,11 @@ namespace SelfieAWookie.API.UI.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery]int? wookieId = 0)
         {
             //var model = Enumerable.Range(1, 10).Select(item => new Selfie() { Id = item });
-
-            var model = this.repository.GetAll();
+            var param = this.Request.Query["wookieId"];
+            var model = this.repository.GetAll(wookieId);
 
             var res = model.Select(item =>
             new SelfieResumeDTO() { Title = item.Title, WookieId = item.Wookie.Id, nbSelfiesFromWookie = (item.Wookie?.Selfies?.Count).GetValueOrDefault(0) })

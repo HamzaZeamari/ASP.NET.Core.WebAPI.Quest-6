@@ -44,7 +44,7 @@ namespace SelfieAWookieTest
 
             var repositoryMock = new Mock<ISelfieRepository>();
 
-            repositoryMock.Setup(item => item.GetAll()).Returns(expectedList);
+            repositoryMock.Setup(item => item.GetAll(It.IsAny<int>())).Returns(expectedList);
             var controller = new SelfieController(repositoryMock.Object);
 
 
