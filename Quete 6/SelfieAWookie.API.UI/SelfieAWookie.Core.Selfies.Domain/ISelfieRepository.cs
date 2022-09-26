@@ -13,5 +13,6 @@ namespace SelfieAWookie.Core.Selfies.Domain
     {
         ICollection<Selfie> GetAll(int? wookieId);
         Selfie AddOne(Selfie item);
+        Picture AddOne(string url);
     }
 }

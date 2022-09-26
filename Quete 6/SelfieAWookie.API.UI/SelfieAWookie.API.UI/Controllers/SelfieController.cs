@@ -12,9 +12,11 @@ namespace SelfieAWookie.API.UI.Controllers
     public class SelfieController : ControllerBase
     {
         private readonly ISelfieRepository repository = null;
-        public SelfieController(ISelfieRepository slf)
+        private readonly IWebHostEnvironment hostEnvironment = null;
+        public SelfieController(ISelfieRepository slf, IWebHostEnvironment host)
         {
             repository = slf;
+            hostEnvironment = host;
         }
 
         [HttpGet]
@@ -52,6 +54,48 @@ namespace SelfieAWookie.API.UI.Controllers
             
             
             return res;
+        }
+
+        //[Route("photos")]
+        //[HttpPost]
+        //public async Task<IActionResult> AddPicture()
+        //{
+        //    using var stream = new StreamReader(this.Request.Body) ;
+        //    var content = await stream.ReadToEndAsync();
+
+        //    return this.Ok();
+        //}
+
+        [Route("photos")]
+        [HttpPost]
+        public async Task<IActionResult> AddPicture(IFormFile file)
+        {
+            string filePath = Path.Combine(hostEnvironment.ContentRootPath, @"images\selfies");
+            
+            if (!Directory.Exists(filePath))
+            {
+                Directory.CreateDirectory(filePath);
+            }
+
+            filePath = Path.Combine(filePath, file.FileName);
+
+            using var stream = new FileStream(filePath, FileMode.OpenOrCreate);
+            await file.CopyToAsync(stream);
+
+            try
+            {
+                var itemFile = repository.AddOne(filePath);
+                repository.UnitOfWork.SaveChanges();
+                return this.Ok(itemFile);
+            }
+            catch(Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+
+            return this.Ok();
+
+
         }
     }
 }

@@ -31,5 +31,13 @@ namespace SelfieAWookie.Core.Selfies.Infrastructures.Repositories
         {
             return this.context.Selfies.Add(item).Entity;
         }
+
+        public Picture AddOne(string url)
+        {
+            return this.context.Pictures.Add(new Picture()
+            {
+                Url = url
+            }).Entity; 
+        }
     }
 }
